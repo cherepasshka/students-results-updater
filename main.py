@@ -61,10 +61,17 @@ def clear_sheet(sheet_name, start_cell, row_count, column_count):
     return request
 
 
-#TODO: fix writing when dimension = COLUMNS
+def transpose(data):
+    return [[data[i][j] for i in range(len(data))] for j in range(len(data[0]))]
+
+
 def write(sheet_name, from_cell, data_to_write, dimension):
+    if dimension == 'COLUMNS':
+        data_to_write = transpose(data_to_write)
+    
     last_row = int(from_cell[1:]) + len(data_to_write) - 1
     end_cell = '{letter}{row}'.format(letter=chr(ord(from_cell[0]) + len(data_to_write[0]) - 1), row=last_row)
+    print(from_cell, end_cell)
     range = '{name}!{from_cell}:{end_cell}'.format(name=sheet_name, from_cell=from_cell, end_cell=end_cell)
     values = service.spreadsheets().values().batchUpdate(
         spreadsheetId=spreadsheet_id,
@@ -72,7 +79,7 @@ def write(sheet_name, from_cell, data_to_write, dimension):
             "valueInputOption": "USER_ENTERED",
             "data": [
                 {"range": range,
-                 "majorDimension": dimension,
+                 "majorDimension": "ROWS",
                  "values": data_to_write},
             ]
         }
@@ -101,8 +108,9 @@ with open('sheet_id.txt', 'r') as f:
 service = connect(CREDENTIALS_FILE)
 spreadsheet = service.spreadsheets().get(spreadsheetId=spreadsheet_id).execute()
 sheet_list = spreadsheet.get('sheets')
+
 print('Service account has successfully connected to Google sheet')
 
 working_sheet = sheet_list[0]['properties']['title']
 prepare_sheet(working_sheet, sheet_list)
-write(working_sheet, 'A1', [['hi', ',', 'i', 'am', 'glad', 'to', 'see', 'you', '!']], "ROWS")
+write(working_sheet, 'A1', [['hi', ',', 'i', 'am', 'glad', 'to', 'see', 'you', '!']], "COLUMNS")
