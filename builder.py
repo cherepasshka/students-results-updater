@@ -1,6 +1,6 @@
 import os
 
-res_made = os.system('python3 maketable.py > obj.txt')
+res_made = os.system('python3 maketable.py > out.txt')
 if res_made != 0:
 	print('Something went wrong while generating data')
 	exit(1)
