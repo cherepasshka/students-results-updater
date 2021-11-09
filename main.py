@@ -71,7 +71,6 @@ def write(sheet_name, from_cell, data_to_write, dimension):
     
     last_row = int(from_cell[1:]) + len(data_to_write) - 1
     end_cell = '{letter}{row}'.format(letter=chr(ord(from_cell[0]) + len(data_to_write[0]) - 1), row=last_row)
-    print(from_cell, end_cell)
     range = '{name}!{from_cell}:{end_cell}'.format(name=sheet_name, from_cell=from_cell, end_cell=end_cell)
     values = service.spreadsheets().values().batchUpdate(
         spreadsheetId=spreadsheet_id,
@@ -90,7 +89,7 @@ def write(sheet_name, from_cell, data_to_write, dimension):
 def prepare_sheet(sheet_name, sheet_list):
     if not have_sheet(sheet_name, sheet_list):
         add_sheet(sheet_name, 1000, 26)
-    clear_sheet(sheet_name, 'A1', row_count=1000, column_count=26)
+    clear_sheet(sheet_name, 'A1', row_count=4000, column_count=26)
 
 
 files = os.listdir()
@@ -117,4 +116,6 @@ prepare_sheet(working_sheet, sheet_list)
 with open('out.txt', 'r') as f:
     data = f.read()
 data = [x.split() for x in data.split('\n')]
+head = ['LOGIN'] + ['HW' + str(i) for i in range(1, 11)] + ['KR1', 'KR2', 'KR1-1', 'KR2-1']
+data = [head] + data
 write(working_sheet, 'A1', data, "ROWS")
