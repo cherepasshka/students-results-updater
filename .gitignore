@@ -2,3 +2,4 @@ venv/*
 *.txt
 !requirements.txt
 *.json
+*.xml
