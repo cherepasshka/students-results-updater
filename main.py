@@ -113,4 +113,8 @@ print('Service account has successfully connected to Google sheet')
 
 working_sheet = sheet_list[0]['properties']['title']
 prepare_sheet(working_sheet, sheet_list)
-write(working_sheet, 'A1', [['hi', ',', 'i', 'am', 'glad', 'to', 'see', 'you', '!']], "COLUMNS")
+
+with open('out.txt', 'r') as f:
+    data = f.read()
+data = [x.split() for x in data.split('\n')]
+write(working_sheet, 'A1', data, "ROWS")
